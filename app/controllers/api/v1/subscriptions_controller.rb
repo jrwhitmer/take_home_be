@@ -2,7 +2,7 @@ class Api::V1::SubscriptionsController < ApplicationController
 
   def create
     if params[:title].present? && params[:price].present? && params[:status].present? && params[:frequency].present?
-      @current_customer = Customer.by_id(params[:customer_id])
+      @current_customer = Customer.find(params[:customer_id])
       @new_subscription = Subscription.create!(subscription_params)
       @current_customer.subscriptions << @new_subscription
       json_response(@new_subscription, :created)
@@ -19,6 +19,12 @@ class Api::V1::SubscriptionsController < ApplicationController
     else
       render_bad_request("Missing status parameter")
     end
+  end
+
+  def index
+    @current_customer = Customer.find(params[:customer_id])
+    subscriptions = @current_customer.subscriptions
+    render json: subscriptions, each_serializer: SubscriptionSerializer, status: :ok
   end
 
   private
