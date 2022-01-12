@@ -20,15 +20,15 @@ RSpec.describe "GET /api/v1/customers/id/subscriptions" do
 
     parsed = JSON.parse(response.body, symbolize_names: true)
 
-    expect(parsed[:subscriptions][0][:title]).to eq("Subscription 1")
-    expect(parsed[:subscriptions][1][:title]).to eq("Subscription 2")
+    expect(parsed[0][:title]).to eq("Subscription 1")
+    expect(parsed[1][:title]).to eq("Subscription 2")
   end
   it 'renders all subscriptions for that customer only' do
     get "/api/v1/customers/#{@customer_1.id}/subscriptions"
 
     parsed = JSON.parse(response.body, symbolize_names: true)
 
-    expect(parsed[:subscriptions][0][:title]).to eq("Subscription 1")
-    expect(parsed[:subscriptions][-1][:title]).to eq("Subscription 2")
+    expect(parsed[0][:title]).to eq("Subscription 1")
+    expect(parsed[-1][:title]).to eq("Subscription 2")
   end
 end
