@@ -48,4 +48,18 @@ RSpec.describe 'POST /api/v1/customers/id/subscriptions' do
     expect(created_subscription.status).to eq("active")
     expect(created_subscription.frequency).to eq("monthly")
   end
+  it 'adds the new subscription to the customers subscriptions' do
+    subscription_params = {
+      title: "Subscription 1",
+      price: "11.99",
+      status: "active",
+      frequency: "monthly"
+    }
+    headers = { 'CONTENT_TYPE' => 'application/json' }
+
+    post "/api/v1/customers/#{@customer.id}/subscriptions", headers: headers, params: JSON.generate(subscription_params)
+
+    created_subscription = Subscription.last
+    expect(@customer.subscriptions.last).to eq(created_subscription)
+  end
 end
