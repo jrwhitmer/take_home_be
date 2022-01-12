@@ -11,6 +11,16 @@ class Api::V1::SubscriptionsController < ApplicationController
     end
   end
 
+  def update
+    if params[:status].present?
+      @current_subscription = Subscription.find(params[:id])
+      @current_subscription.update(status: params[:status])
+      json_response(@current_subscription, 204)
+    else
+      render_bad_request("Missing status parameter")
+    end
+  end
+
   private
 
   def subscription_params
