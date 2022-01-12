@@ -27,7 +27,25 @@ RSpec.describe 'POST /api/v1/customers/id/subscriptions' do
     post "/api/v1/customers/#{@customer.id}/subscriptions", headers: headers, params: JSON.generate(subscription_params)
 
     expect(response).to have_http_status(400)
-    expect(response.body).to match(/Missing parameter in request/)
+    parsed = JSON.parse(response.body, symbolize_names: true)
+    expect(parsed[:error]).to match("Missing parameter in request")
   end
-  
+  it 'creates a new subscription when request is made successfully' do
+    subscription_params = {
+      title: "Subscription 1",
+      price: "11.99",
+      status: "active",
+      frequency: "monthly"
+    }
+    headers = { 'CONTENT_TYPE' => 'application/json' }
+
+    post "/api/v1/customers/#{@customer.id}/subscriptions", headers: headers, params: JSON.generate(subscription_params)
+
+    created_subscription = Subscription.last
+
+    expect(created_subscription.title).to eq("Subscription 1")
+    expect(created_subscription.price).to eq("11.99")
+    expect(created_subscription.status).to eq("active")
+    expect(created_subscription.frequency).to eq("monthly")
+  end
 end
