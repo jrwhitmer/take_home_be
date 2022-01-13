@@ -15,6 +15,22 @@ RSpec.describe 'PATCH /api/v1/customers/id/subscriptions/id' do
 
     expect(response).to have_http_status(200)
   end
+
+  it 'returns the object with the updated status' do
+    subscription_params = {
+      status: "cancelled",
+    }
+    headers = { 'CONTENT_TYPE' => 'application/json' }
+
+    patch "/api/v1/customers/#{@customer.id}/subscriptions/#{@subscription.id}", headers: headers, params: JSON.generate(subscription_params)
+
+    parsed = JSON.parse(response.body, symbolize_names: true)
+
+    expect(parsed[:status]).to eq("cancelled")
+    expect(parsed[:title]).to eq("Subscription 1")
+    expect(parsed[:price]).to eq("11.99")
+    expect(parsed[:frequency]).to eq("monthly")
+  end
   it 'returns a 400 error when the cancel request is made incorrectly and throws an error' do
 
     patch "/api/v1/customers/#{@customer.id}/subscriptions/#{@subscription.id}"
@@ -23,6 +39,20 @@ RSpec.describe 'PATCH /api/v1/customers/id/subscriptions/id' do
 
     expect(response).to have_http_status(400)
     expect(parsed[:error]).to eq("Missing status parameter")
+
+  end
+  it 'returns a 400 status and throws an error when status given is not active or cancelled' do
+    subscription_params = {
+      status: "blahblah",
+    }
+    headers = { 'CONTENT_TYPE' => 'application/json' }
+    
+    patch "/api/v1/customers/#{@customer.id}/subscriptions/#{@subscription.id}", headers: headers, params: JSON.generate(subscription_params)
+
+    parsed = JSON.parse(response.body, symbolize_names: true)
+
+    expect(response.status).to eq(400)
+    expect(parsed[:error]).to eq("Not a valid status option. Try active or cancelled.")
   end
   it 'updates the status when request is made correctly' do
     subscription_params = {
