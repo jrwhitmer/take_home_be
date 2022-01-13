@@ -26,10 +26,10 @@ class Api::V1::SubscriptionsController < ApplicationController
 
   def index
     current_customer = Customer.find(params[:customer_id])
-    if query? && params[:q] == "cancelled"
+    if status_query? && params[:status] == "cancelled"
       subscriptions = current_customer.cancelled_subscriptions
       render json: subscriptions, each_serializer: SubscriptionSerializer, status: :ok
-    elsif query? && params[:q] == "active"
+    elsif status_query? && params[:status] == "active"
       subscriptions = current_customer.active_subscriptions
       render json: subscriptions, each_serializer: SubscriptionSerializer, status: :ok
     else
@@ -40,8 +40,8 @@ class Api::V1::SubscriptionsController < ApplicationController
 
   private
 
-  def query?
-    params[:q].present?
+  def status_query?
+    params[:status].present?
   end
 
   def all_params?
