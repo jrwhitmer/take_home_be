@@ -12,15 +12,15 @@ class Api::V1::SubscriptionsController < ApplicationController
   end
 
   def update
-    if params[:status].present?
+    if any_params?
       current_subscription = Subscription.find(params[:id])
-      if current_subscription.update(status: params[:status])
+      if current_subscription.update(subscription_params)
         json_response(current_subscription, :ok)
       else
-        render_bad_request("Not a valid status option. Try active or cancelled.")
-      end 
+        render_bad_request("Not a valid status or frequency option. Try active or cancelled.")
+      end
     else
-      render_bad_request("Missing status parameter")
+      render_bad_request("Missing any parameters")
     end
   end
 
@@ -34,6 +34,10 @@ class Api::V1::SubscriptionsController < ApplicationController
 
   def all_params?
     params[:title].present? && params[:price].present? && params[:status].present? && params[:frequency].present?
+  end
+
+  def any_params?
+    params[:title].present? || params[:price].present? || params[:status].present? || params[:frequency].present?
   end
 
   def subscription_params

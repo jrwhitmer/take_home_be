@@ -141,13 +141,23 @@ Beyond the base requirements, include any additional endpoints you’d like, but
  ```
 
  * PATCH to `/api/v1/customers/id/subscriptions/id`
- - accepts the following body:
- types of statuses
+ - options for status are "active" and "cancelled"
+ - options for frequency are "weekly", "monthly", and "yearly"
+ - accepts the following body (you can update any or many attributes at once):
  ```
   {
     "status": "status"
   }
  ```
 
- - returns status 204 if successful:
+ - returns the following body:
+ ```
+  {
+    "status": "updated status",
+    "id": "id",
+    "price": "price",
+    "frequency": "frequency",
+    "title": title
+  }
+ ```
  </div>

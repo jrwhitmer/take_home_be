@@ -38,7 +38,7 @@ RSpec.describe 'PATCH /api/v1/customers/id/subscriptions/id' do
     parsed = JSON.parse(response.body, symbolize_names: true)
 
     expect(response).to have_http_status(400)
-    expect(parsed[:error]).to eq("Missing status parameter")
+    expect(parsed[:error]).to eq("Missing any parameters")
 
   end
   it 'returns a 400 status and throws an error when status given is not active or cancelled' do
@@ -46,13 +46,13 @@ RSpec.describe 'PATCH /api/v1/customers/id/subscriptions/id' do
       status: "blahblah",
     }
     headers = { 'CONTENT_TYPE' => 'application/json' }
-    
+
     patch "/api/v1/customers/#{@customer.id}/subscriptions/#{@subscription.id}", headers: headers, params: JSON.generate(subscription_params)
 
     parsed = JSON.parse(response.body, symbolize_names: true)
 
     expect(response.status).to eq(400)
-    expect(parsed[:error]).to eq("Not a valid status option. Try active or cancelled.")
+    expect(parsed[:error]).to eq("Not a valid status or frequency option. Try active or cancelled.")
   end
   it 'updates the status when request is made correctly' do
     subscription_params = {
@@ -65,5 +65,24 @@ RSpec.describe 'PATCH /api/v1/customers/id/subscriptions/id' do
     subscription = Subscription.find(@subscription.id)
 
     expect(subscription.status).to eq("cancelled")
+  end
+
+  it 'now allows any attribute to be updated as well as multiple attributes at once' do
+    subscription_params = {
+      status: "cancelled",
+      frequency: "yearly",
+      title: "updated title",
+      price: "16.88"
+    }
+    headers = { 'CONTENT_TYPE' => 'application/json' }
+
+    patch "/api/v1/customers/#{@customer.id}/subscriptions/#{@subscription.id}", headers: headers, params: JSON.generate(subscription_params)
+
+    subscription = Subscription.find(@subscription.id)
+
+    expect(subscription.status).to eq("cancelled")
+    expect(subscription.price).to eq("16.88")
+    expect(subscription.frequency).to eq("yearly")
+    expect(subscription.title).to eq("updated title")
   end
 end
