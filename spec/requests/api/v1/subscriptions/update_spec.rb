@@ -5,7 +5,7 @@ RSpec.describe 'PATCH /api/v1/customers/id/subscriptions/id' do
     @subscription = Subscription.create!(title: "Subscription 1", price: "11.99", status: "active", frequency: "monthly")
     @customer_subscription = CustomerSubscription.create!(customer_id: @customer.id, subscription_id: @subscription.id)
   end
-  it 'returns a 204 status when the cancel request is made correctly' do
+  it 'returns a 200 status when the cancel request is made correctly' do
     subscription_params = {
       status: "cancelled",
     }
@@ -13,7 +13,7 @@ RSpec.describe 'PATCH /api/v1/customers/id/subscriptions/id' do
 
     patch "/api/v1/customers/#{@customer.id}/subscriptions/#{@subscription.id}", headers: headers, params: JSON.generate(subscription_params)
 
-    expect(response).to have_http_status(204)
+    expect(response).to have_http_status(200)
   end
   it 'returns a 400 error when the cancel request is made incorrectly and throws an error' do
 

@@ -142,6 +142,7 @@ Beyond the base requirements, include any additional endpoints you’d like, but
 
  * PATCH to `/api/v1/customers/id/subscriptions/id`
  - accepts the following body:
+ types of statuses
  ```
   {
     "status": "status"
