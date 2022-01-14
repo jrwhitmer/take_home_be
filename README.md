@@ -162,7 +162,7 @@ Beyond the base requirements, include any additional endpoints you’d like, but
     "id": "id",
     "price": "price",
     "frequency": "frequency",
-    "title": title
+    "title": "title"
   }
  ```
  </div>
