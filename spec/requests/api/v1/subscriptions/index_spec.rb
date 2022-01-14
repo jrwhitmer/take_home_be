@@ -31,4 +31,20 @@ RSpec.describe "GET /api/v1/customers/id/subscriptions" do
     expect(parsed[0][:title]).to eq("Subscription 1")
     expect(parsed[-1][:title]).to eq("Subscription 2")
   end
+  it 'can return all active subscriptions when search param present' do
+    get "/api/v1/customers/#{@customer_1.id}/subscriptions?status=active"
+
+    parsed = JSON.parse(response.body, symbolize_names: true)
+
+    expect(parsed[0][:title]).to eq("Subscription 1")
+    expect(parsed[-1][:title]).to eq("Subscription 1")
+  end
+  it 'can return all cancelled subscriptions when search param is present' do
+    get "/api/v1/customers/#{@customer_1.id}/subscriptions?status=cancelled"
+
+    parsed = JSON.parse(response.body, symbolize_names: true)
+
+    expect(parsed[0][:title]).to eq("Subscription 2")
+    expect(parsed[-1][:title]).to eq("Subscription 2")
+  end
 end
