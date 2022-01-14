@@ -84,6 +84,8 @@ Beyond the base requirements, include any additional endpoints you’d like, but
 <div align="left">
 
 * POST to `/api/v1/customers/id/subscriptions`
+  - options for status are "active" and "cancelled"
+  - options for frequency are "weekly", "monthly", and "yearly"
   - accepts the following body:
   ```
     {
@@ -106,6 +108,9 @@ Beyond the base requirements, include any additional endpoints you’d like, but
   }
   ```
 * GET to `/api/v1/customers/id/subscriptions`
+ - optional query: `/subscriptions?status=active` for all active subscriptions
+ - optional query: `/subscriptions?status=cancelled` for all cancelled subscriptions
+ - an incorrect query will return all records for this customer
  - returns the following body:
  ```
    {[
