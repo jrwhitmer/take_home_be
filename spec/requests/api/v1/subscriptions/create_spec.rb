@@ -62,4 +62,21 @@ RSpec.describe 'POST /api/v1/customers/id/subscriptions' do
     created_subscription = Subscription.last
     expect(@customer.subscriptions.last).to eq(created_subscription)
   end
+
+  it 'returns an error and 400 status if frequency or status values are out of bounds' do
+    subscription_params = {
+      title: "Subscription 1",
+      price: "11.99",
+      status: "blah",
+      frequency: "booboo"
+    }
+    headers = { 'CONTENT_TYPE' => 'application/json' }
+
+    post "/api/v1/customers/#{@customer.id}/subscriptions", headers: headers, params: JSON.generate(subscription_params)
+
+    parsed = JSON.parse(response.body, symbolize_names: true)
+
+    expect(response.status).to eq(400)
+    expect(parsed[:error]).to eq("Not a valid status or frequency option. Try active or cancelled for status. Try monthly, weekly, or yearly for frequency.")
+  end
 end

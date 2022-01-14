@@ -52,7 +52,7 @@ RSpec.describe 'PATCH /api/v1/customers/id/subscriptions/id' do
     parsed = JSON.parse(response.body, symbolize_names: true)
 
     expect(response.status).to eq(400)
-    expect(parsed[:error]).to eq("Not a valid status or frequency option. Try active or cancelled.")
+    expect(parsed[:error]).to eq("Not a valid status or frequency option. Try active or cancelled for status. Try monthly, weekly, or yearly for frequency.")
   end
   it 'updates the status when request is made correctly' do
     subscription_params = {
